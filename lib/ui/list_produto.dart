@@ -1,45 +1,41 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:venda_produto/helpers/api_produto.dart';
-import 'package:venda_produto/models/api.dart';
+import 'dart:convert';
+import 'dart:async' show Future;
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:venda_produto/models/produto_models.dart';
+import 'package:venda_produto/ui/import_produto.dart';
 
-class ListViewProduto extends StatefulWidget {
+
+class ListProduto extends StatefulWidget {
   @override
-  _ListViewProdutoState createState() => _ListViewProdutoState();
+  _ListProdutoState createState() => _ListProdutoState();
 }
 
-class _ListViewProdutoState extends State<ListViewProduto> {
-  var produtos = new List<ProdutoApi>();
+class _ListProdutoState extends State<ListProduto> {
 
-  _getProdutos() {
-    API.getUsers().then((response) {
-      setState(() {
-        Iterable list = json.decode(response.body);
-        produtos = list.map((model) => ProdutoApi.fromJson(model)).toList();
-      });
-    });
+  Future<String> _carregaProdutoJson() async {
+    return await rootBundle.loadString('assets/produtos.json');
   }
-  initState() {
-    super.initState();
-    _getProdutos();
-  }
-  dispose() {
-    super.dispose();
+  Future carregaProduto() async {
+    String jsonString = await _carregaProdutoJson();
+    final jsonResponse = json.decode(jsonString);
+
+    Product produto = new Product.fromJson(jsonResponse);
+
+    print(produto.name);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de Produtos"),
+        title: Text("Lista de Porduto"),
       ),
-      body: ListView.builder(
-        itemCount: produtos.length,
-        itemBuilder: (context, index){
-          return ListTile(title: Text(produtos[index].name));
-        },
-      ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.import_export),
+          onPressed: (){
+            carregaProduto();
+          }),
     );
   }
 }

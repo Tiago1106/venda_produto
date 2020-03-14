@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:venda_produto/models/vendedor_moldels.dart';
 import 'package:venda_produto/helpers/vendedor_helper.dart';
-import 'package:venda_produto/ui/list_produto.dart';
+import 'list_produto.dart';
 import 'register_vendedor.dart';
+import 'package:venda_produto/ui/import_produto.dart';
 
 class VendedorPage extends StatefulWidget {
   @override
@@ -49,7 +50,10 @@ class _VendedorPageState extends State<VendedorPage> {
                 leading: Icon(Icons.import_export),
                 trailing: Icon(Icons.arrow_right),
                 title: Text("Importar Produtos"),
-                onTap: (){},
+                onTap: (){
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => FilePickerDemo()));
+                },
               ),
             ],
           ),
@@ -86,7 +90,7 @@ class _VendedorPageState extends State<VendedorPage> {
       ),
       onTap: (){
         Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ListViewProduto())
+          MaterialPageRoute(builder: (context) => ListProduto()),
         );
       },
       onLongPress: (){
