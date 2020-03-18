@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:venda_produto/models/vendedor_moldels.dart';
+import 'package:venda_produto/data/models/seller_model.dart';
 
-class RegisterVendedor extends StatefulWidget {
+class SellerRegister extends StatefulWidget {
 
-  final Vendedor vendedor;
-  RegisterVendedor({this.vendedor});
+  final SellerModel seller;
+  SellerRegister({this.seller});
 
   @override
-  _RegisterVendedorState createState() => _RegisterVendedorState();
+  _SellerRegisterState createState() => _SellerRegisterState();
 }
 
-class _RegisterVendedorState extends State<RegisterVendedor> {
-  final _nameVendedorController = TextEditingController();
-  final _idVendedorController = TextEditingController();
+class _SellerRegisterState extends State<SellerRegister> {
 
-  Vendedor _editedVendedor;
-  bool _vendedorEdited = false;
+  final _nameController = TextEditingController();
+  final _codeController = TextEditingController();
+
+  SellerModel _editedSeller;
+  bool _sellerEdited = false;
 
   final _nameFocus = FocusNode();
 
@@ -23,13 +24,13 @@ class _RegisterVendedorState extends State<RegisterVendedor> {
   void initState() {
     super.initState();
 
-    if(widget.vendedor == null){
-      _editedVendedor = Vendedor();
+    if(widget.seller == null){
+      _editedSeller = SellerModel();
     } else {
-      _editedVendedor = Vendedor.fromMap(widget.vendedor.toMapVendedor());
+      _editedSeller = SellerModel.fromMap(widget.seller.toMap());
 
-      _nameVendedorController.text = _editedVendedor.nameVendedor;
-      _idVendedorController.text = _editedVendedor.idVendedor;
+      _nameController.text = _editedSeller.name;
+      _codeController.text = _editedSeller.code.toString();
     }
   }
 
@@ -40,7 +41,7 @@ class _RegisterVendedorState extends State<RegisterVendedor> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red,
-          title: Text(_editedVendedor.nameVendedor ?? "Novo Vendedor"),
+          title: Text(_editedSeller.name ?? "Novo Vendedor"),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -48,45 +49,45 @@ class _RegisterVendedorState extends State<RegisterVendedor> {
           child: Column(
             children: <Widget>[
               TextField(
-                controller: _nameVendedorController,
+                controller: _nameController,
                 focusNode: _nameFocus,
                 decoration: InputDecoration(labelText: "Nome do Vendedor"),
                 onChanged: (text){
-                  _vendedorEdited = true;
+                  _sellerEdited = true;
                   setState(() {
-                    _editedVendedor.nameVendedor = text;
+                    _editedSeller.name = text;
                   });
                 },
               ),
               TextField(
-                controller: _idVendedorController,
-                decoration: InputDecoration(labelText: "ID do Vendedor"),
+                controller: _codeController,
+                decoration: InputDecoration(labelText: "Código do Vendedor"),
                 keyboardType: TextInputType.number,
                 onChanged: (text){
-                  _vendedorEdited = true;
-                  _editedVendedor.idVendedor = text;
+                  _sellerEdited = true;
+                  _editedSeller.code = int.parse(text);
                 },
               ),
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
-            onPressed: (){
-              if(_editedVendedor.nameVendedor != null && _editedVendedor.nameVendedor.isNotEmpty){
-                Navigator.pop(context, _editedVendedor);
-              } else {
-                FocusScope.of(context).requestFocus(_nameFocus);
-              }
-            },
-            child: Icon(Icons.check),
-            backgroundColor: Colors.red,
-            ),
+          onPressed: (){
+            if(_editedSeller.name != null && _editedSeller.name.isNotEmpty){
+              Navigator.pop(context, _editedSeller);
+            } else {
+              FocusScope.of(context).requestFocus(_nameFocus);
+            }
+          },
+          child: Icon(Icons.check),
+          backgroundColor: Colors.red,
+        ),
       ),
     );
   }
 
   Future<bool> _requestPop(){
-    if(_vendedorEdited){
+    if(_sellerEdited){
       showDialog(context: context,
           builder: (context){
             return AlertDialog(

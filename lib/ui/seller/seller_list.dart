@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:venda_produto/models/vendedor_moldels.dart';
-import 'package:venda_produto/helpers/vendedor_helper.dart';
-import 'list_produto.dart';
-import 'register_vendedor.dart';
-import 'package:venda_produto/ui/import_produto.dart';
+import 'package:venda_produto/data/models/seller_model.dart';
+import 'package:venda_produto/data/helpers/seller_helper.dart';
+import '../product/product_list.dart';
+import 'seller_register.dart';
+import 'package:venda_produto/ui/product/product_import.dart';
 
-class VendedorPage extends StatefulWidget {
+class SellerList extends StatefulWidget {
   @override
-  _VendedorPageState createState() => _VendedorPageState();
+  _SellerListState createState() => _SellerListState();
 }
 
-class _VendedorPageState extends State<VendedorPage> {
+class _SellerListState extends State<SellerList> {
 
-  VendedorHelper helper = VendedorHelper();
+  SellerHelper helper = SellerHelper();
 
-  List<Vendedor> vendedores = List();
+  List<SellerModel> sellers = List();
 
   @override
   void initState() {
     super.initState();
 
-    _getAllVendedores();
+    _getAllSeller();
+  }
+
+  void _getAllSeller(){
+    helper.getAll().then((list){
+      setState(() {
+        sellers = list;
+      });
+    });
   }
 
   @override
@@ -43,7 +51,7 @@ class _VendedorPageState extends State<VendedorPage> {
                 trailing: Icon(Icons.arrow_right),
                 title: Text("Adicionar Vendedor"),
                 onTap: (){
-                  _showRegisterVendedor();
+                  _showRegisterSeller();
                 },
               ),
               ListTile(
@@ -52,7 +60,7 @@ class _VendedorPageState extends State<VendedorPage> {
                 title: Text("Importar Produtos"),
                 onTap: (){
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FilePickerDemo()));
+                      MaterialPageRoute(builder: (context) => ProductImport()));
                 },
               ),
             ],
@@ -61,15 +69,15 @@ class _VendedorPageState extends State<VendedorPage> {
       ),
       body: ListView.builder(
         padding: EdgeInsets.all(10.0),
-        itemCount: vendedores.length,
+        itemCount: sellers.length,
         itemBuilder: (context, index) {
-          return _vendedorCard(context, index);
+          return _sellerCard(context, index);
         },
         ),
     );
   }
 
-  Widget _vendedorCard(BuildContext context, int index) {
+  Widget _sellerCard(BuildContext context, int index) {
     return GestureDetector(
       child: Card(
         child: Padding(
@@ -77,11 +85,11 @@ class _VendedorPageState extends State<VendedorPage> {
           child: Column(
             children: <Widget>[
               Text(
-                vendedores[index].nameVendedor ?? "",
+                sellers[index].name ?? "",
                 style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
               ),
               Text(
-                vendedores[index].idVendedor ?? "",
+                sellers[index].code.toString(),
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
               ),
             ],
@@ -90,34 +98,26 @@ class _VendedorPageState extends State<VendedorPage> {
       ),
       onTap: (){
         Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ListProduto()),
+          MaterialPageRoute(builder: (context) => ListProduct()),
         );
       },
       onLongPress: (){
-        _showRegisterVendedor(vendedor: vendedores[index]);
+        _showRegisterSeller(seller: sellers[index]);
       },
     );
   }
 
-  void _showRegisterVendedor({Vendedor vendedor}) async{
-    final recVendedor = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => RegisterVendedor(vendedor: vendedor,))
+  void _showRegisterSeller({SellerModel seller}) async{
+    final recSeller = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => SellerRegister(seller: seller,))
     );
-    if(recVendedor != null){
-      if(vendedor != null){
-        await helper.updateVendedor(recVendedor);
+    if(recSeller != null){
+      if(seller != null){
+        await helper.update(recSeller);
       } else{
-        await helper.saveVendedor(recVendedor);
+        await helper.save(recSeller);
       }
-      _getAllVendedores();
+      _getAllSeller();
     }
-  }
-
-  void _getAllVendedores(){
-    helper.getAllVendedor().then((list){
-      setState(() {
-        vendedores = list;
-      });
-    });
   }
 }
