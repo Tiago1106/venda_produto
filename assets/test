@@ -1,0 +1,27 @@
+void _padding(){
+    Padding(padding: EdgeInsets.all(10.0),
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          labelText: "Pesquisar Produto",
+          prefixIcon: Icon(Icons.search),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25.0))
+          ),
+        ),
+        onChanged: (context){
+          searchedWord = context;
+        },
+      ),
+    );
+  }
+
+  void _searchedWord(){
+      ListView.builder(
+          padding: EdgeInsets.all(10.0),
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+      return _productCard(context, index);
+        }
+      );
+    }

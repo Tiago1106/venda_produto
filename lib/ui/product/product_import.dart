@@ -52,7 +52,7 @@ class _ProductImportState extends State<ProductImport> {
     final jsonResponse = json.decode(jsonString);
 
     final products = ProductModel.fromJsonArray(jsonResponse);
-    products.forEach((product) => print(product.toString()));
+    //products.forEach((product) => print(product.toString()));
 
     return products;
   }

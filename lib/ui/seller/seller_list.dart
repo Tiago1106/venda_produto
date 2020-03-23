@@ -73,7 +73,8 @@ class _SellerListState extends State<SellerList> {
         itemBuilder: (context, index) {
           return _sellerCard(context, index);
         },
-        ),
+      ),
+
     );
   }
 

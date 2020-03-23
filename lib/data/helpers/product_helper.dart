@@ -65,7 +65,7 @@ class ProductHelper {
     );
   }
 
-  Future<List> getAll() async {
+  Future<List<ProductModel>> getAll() async {
     Database db = await _db;
     List listMap = await db.rawQuery("SELECT * FROM $productTable");
     List<ProductModel> list = List();
@@ -79,6 +79,32 @@ class ProductHelper {
     Database db = await _db;
     return Sqflite.firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM $productTable"));
   }
+
+  /*Future<List<ProductModel>> searchList (String searchedWord) async {
+    Database db = await _db;
+    List listMap = await db.query(productTable,
+        columns: [productCodeColumn, productDescriptionColumn, productPriceColumn, productCategoryColumn],
+        where: "$productDescriptionColumn LIKE '?'",
+        whereArgs: [searchedWord]);
+    List<ProductModel> list = List();
+    for (Map sL in listMap){
+        list.add(ProductModel.fromMap(sL));
+    }
+    return list;
+  }*/
+
+  Future<List<ProductModel>> searchList (String searchedWord) async {
+    Database db = await _db;
+    List listMap = await db.rawQuery("SELECT * FROM $productTable "
+        "WHERE $productDescriptionColumn LIKE '$searchedWord%' OR $productCodeColumn = '$searchedWord'");
+    List<ProductModel> list = List();
+    for (Map sL in listMap){
+      list.add(ProductModel.fromMap(sL));
+    }
+    return list;
+  }
+
+  //$productCodeColumn = ? OR
 
   Future close() async {
     Database db = await _db;
