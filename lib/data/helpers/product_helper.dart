@@ -80,19 +80,6 @@ class ProductHelper {
     return Sqflite.firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM $productTable"));
   }
 
-  /*Future<List<ProductModel>> searchList (String searchedWord) async {
-    Database db = await _db;
-    List listMap = await db.query(productTable,
-        columns: [productCodeColumn, productDescriptionColumn, productPriceColumn, productCategoryColumn],
-        where: "$productDescriptionColumn LIKE '?'",
-        whereArgs: [searchedWord]);
-    List<ProductModel> list = List();
-    for (Map sL in listMap){
-        list.add(ProductModel.fromMap(sL));
-    }
-    return list;
-  }*/
-
   Future<List<ProductModel>> searchList (String searchedWord) async {
     Database db = await _db;
     List listMap = await db.rawQuery("SELECT * FROM $productTable "
@@ -103,8 +90,6 @@ class ProductHelper {
     }
     return list;
   }
-
-  //$productCodeColumn = ? OR
 
   Future close() async {
     Database db = await _db;

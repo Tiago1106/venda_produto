@@ -12,13 +12,14 @@ class ProductModel {
   String description;
   double price;
   String category;
+  int qntProduct = 0;
 
   ProductModel({
     this.id,
     this.code,
     this.description,
     this.price,
-    this.category
+    this.category,
   });
 
   ProductModel.fromMap(Map mapSeller) {
@@ -34,7 +35,7 @@ class ProductModel {
       productCodeColumn: code,
       productDescriptionColumn: description,
       productPriceColumn: price,
-      productCategoryColumn: category
+      productCategoryColumn: category,
     };
     if(id != null){
       mapSeller[productIdColumn] = id;

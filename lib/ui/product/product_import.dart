@@ -65,62 +65,75 @@ class _ProductImportState extends State<ProductImport> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: const Text('Importar Produto'),
-          centerTitle: true,
-          backgroundColor: Colors.red,
-        ),
-        body: new Center(
-            child: new Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: new SingleChildScrollView(
-                child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    new Padding(
-                      padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                      child: new RaisedButton(
-                        onPressed: () => _openFileExplorer(),
-                        child: new Text("Importar arquivo"),
-                      ),
-                    ),
-                    new Builder(
-                      builder: (BuildContext context) => _path != null
-                          ? new Container(
-                        padding: const EdgeInsets.only(bottom: 30.0),
-                        height: MediaQuery.of(context).size.height * 0.50,
-                        child: new Scrollbar(
-                            child: new ListView.separated(
-                              itemCount: 1,
-                              itemBuilder: (BuildContext context, int index) {
-                                final String name = 'File $index: ' + _fileName ?? '...';
-                                final path = _path;
-                                print(path);
+    return WillPopScope(
+      onWillPop: _requestPop,
+        child: new MaterialApp(
+          home: new Scaffold(
+            appBar: new AppBar(
+              title: const Text('Importar Produto'),
+              centerTitle: true,
+              backgroundColor: Colors.red,
+            ),
+            body: new Center(
+                child: new Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: new SingleChildScrollView(
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new Padding(
+                          padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
+                          child: new RaisedButton(
+                            onPressed: () => _openFileExplorer(),
+                            child: new Text("Importar arquivo"),
+                          ),
+                        ),
+                        new Builder(
+                          builder: (BuildContext context) => _path != null
+                              ? new Container(
+                            padding: const EdgeInsets.only(bottom: 30.0),
+                            height: MediaQuery.of(context).size.height * 0.50,
+                            child: new Scrollbar(
+                                child: new ListView.separated(
+                                  itemCount: 1,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final String name = 'File $index: ' + _fileName ?? '...';
+                                    final path = _path;
+                                    print(path);
 
-                                return new ListTile(
-                                  title: new Text(name),
-                                  subtitle: new Text(path),
-                                );
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                              new Divider(),
-                            )),
-                      )
-                          : new Container(),
+                                    return new ListTile(
+                                      title: new Text(name),
+                                      subtitle: new Text(path),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                  new Divider(),
+                                )),
+                          )
+                              : new Container(),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            )),
-        floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.import_export),
-            onPressed: () {
-              _saveProducts();
-            }),
-      ),
+                  ),
+                )),
+            floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.import_export),
+                onPressed: () {
+                  _saveProducts();
+                }),
+          ),
+        ),
     );
+  }
+
+  Future<bool> _requestPop(){
+    int varRequestPop;
+    varRequestPop = 0;
+    if(varRequestPop == 0){
+      Navigator.pop(context);
+      return Future.value(false);
+    } else Navigator.pop(context);
+    return Future.value(false);
   }
 }

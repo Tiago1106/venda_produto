@@ -99,7 +99,7 @@ class _SellerListState extends State<SellerList> {
       ),
       onTap: (){
         Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ListProduct()),
+          MaterialPageRoute(builder: (context) => ListProduct(seller: sellers[index])),
         );
       },
       onLongPress: (){
