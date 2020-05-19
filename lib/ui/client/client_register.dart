@@ -1,18 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:venda_produto/data/helpers/product_helper.dart';
+import 'package:venda_produto/data/helpers/request_helper.dart';
 import 'package:venda_produto/data/models/product_model.dart';
+import 'package:venda_produto/data/models/requests_model.dart';
 
 class ClientRegister extends StatefulWidget {
 
   final double priceFinal;
   final int sellerCode;
   final products;
-  ClientRegister({Key key, @required
-  this.priceFinal,
-    this.sellerCode,
-    this.products
-  }
-      ) : super(key: key);
+  ClientRegister({Key key, @required this.priceFinal, this.sellerCode, this.products}) : super(key: key);
 
   @override
   _ClientRegisterState createState() => _ClientRegisterState();
@@ -23,13 +21,17 @@ class _ClientRegisterState extends State<ClientRegister> {
   double valueDiscount;
   double valueFinal;
 
+  RequestModel _saveSale;
+
+
   @override
   void initState() {
     super.initState();
     _getAllProductSold();
   }
 
-  ProductHelper helper = ProductHelper();
+  ProductHelper helperProduct = ProductHelper();
+  RequestHelper helperRequest = RequestHelper();
 
   List<ProductModel> productsSold = List();
   final TextEditingController _nameClientController = TextEditingController();
@@ -45,16 +47,6 @@ class _ClientRegisterState extends State<ClientRegister> {
     });
   }
 
-  Widget _productSoldList(){
-    return ListView.builder(
-      padding: EdgeInsets.all(10.0),
-      itemCount: productsSold.length,
-      itemBuilder: (context, index) {
-        return _productCard(context, index);
-      },
-    );
-  }
-
   void _valueFinalSale(){
     valueFinal = widget.priceFinal - valueDiscount;
     _valueFinalController.text = valueFinal.toString();
@@ -62,56 +54,12 @@ class _ClientRegisterState extends State<ClientRegister> {
     print(_valueFinalController);
   }
 
-  Widget _productCard(BuildContext context, int index) {
-    return GestureDetector(
-      child: Card(
-        child: Padding(
-            padding: EdgeInsets.all(5),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.black
-                        )
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Text(productsSold[index].qntProduct.toString() ?? "",
-                          style: TextStyle(color: Colors.black),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 7,
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        productsSold[index].description ?? "",
-                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        productsSold[index].price.toString(),
-                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            )
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
 
     _codeController.text = widget.sellerCode.toString();
     _valueTotalController.text = widget.priceFinal.toString();
+    //_saveSale.listProduct = productsSold;
 
     return Scaffold(
       appBar: AppBar(
@@ -123,114 +71,143 @@ class _ClientRegisterState extends State<ClientRegister> {
           child: Icon(Icons.check_box),
           backgroundColor: Colors.red,
           onPressed: (){
-            _valueFinalSale();
+            _notificationSave();
+            helperRequest.save(_saveSale);
           }
       ),
-      body: _body()
+      body: new SingleChildScrollView(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            new Container(
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                controller: _nameClientController,
+                decoration: InputDecoration(
+                  labelText: "NOME DO CLIENTE",
+                  prefixIcon: Icon(Icons.account_circle),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                ),
+                onChanged: ( text ) {
+                  _saveSale.nameClient = text;
+                }
+              ),
+            ),
+            new Container(
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                controller: _dateController,
+                decoration: InputDecoration(
+                  labelText: "DATA DA VENDA",
+                  prefixIcon: Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                ),
+                onChanged: ( text ){
+                  _saveSale.date = text;
+                },
+              ),
+            ),
+            new Container(
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                enabled: false,
+                controller: _codeController,
+                decoration: InputDecoration(
+                  labelText: "CÓDIGO DO VENDEDOR",
+                  prefixIcon: Icon(Icons.recent_actors),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                ),
+                onChanged: ( text ){
+                  _saveSale.idSeller = int.parse(text);
+                },
+              ),
+            ),
+            new Container(
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                enabled: false,
+                controller: _valueTotalController,
+                decoration: InputDecoration(
+                  labelText: "VALOR TOTAL DA VENDA",
+                  prefixIcon: Icon(Icons.attach_money),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                ),
+                onChanged: ( text ){
+                  _saveSale.valorInicial = double.parse(text);
+                },
+              ),
+            ),
+            new Container(
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                controller: _valueDiscountController,
+                decoration: InputDecoration(
+                  labelText: "VALOR DO DESCONTO",
+                  prefixIcon: Icon(Icons.money_off),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                ),
+                onChanged: (text) {
+                  valueDiscount = double.parse(text);
+                  _valueFinalSale();
+                  _saveSale.valorDesconto = double.parse(text);
+                },
+              ),
+            ),
+            new Container(
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                enabled: false,
+                controller: _valueFinalController,
+                decoration: InputDecoration(
+                  labelText: "VALOR FINAL",
+                  prefixIcon: Icon(Icons.monetization_on),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                ),
+                onChanged: ( text ){
+                  _saveSale.valorFinal = double.parse(text);
+                },
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 
-  _body(){
-    return new Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        new Container(
-          padding: EdgeInsets.all(10.0),
-          child: TextField(
-            controller: _nameClientController,
-            decoration: InputDecoration(
-              labelText: "NOME DO CLIENTE",
-              prefixIcon: Icon(Icons.account_circle),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))
+  _notificationSave() {
+    showDialog(context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Venda salva com sucesso"),
+            content: Text("Deseja imprimir?"),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {},
+                  child: Text("Sim")
               ),
-            ),
-          ),
-        ),
-        new Container(
-          padding: EdgeInsets.all(10.0),
-          child: TextField(
-            controller: _dateController,
-            decoration: InputDecoration(
-              labelText: "DATA DA VENDA",
-              prefixIcon: Icon(Icons.calendar_today),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))
-              ),
-            ),
-          ),
-        ),
-        new Container(
-          padding: EdgeInsets.all(10.0),
-          child: TextField(
-            enabled: false,
-            controller: _codeController,
-            decoration: InputDecoration(
-              labelText: "CÓDIGO DO VENDEDOR",
-              prefixIcon: Icon(Icons.recent_actors),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))
-              ),
-            ),
-          ),
-        ),
-        new Container(
-          padding: EdgeInsets.all(10.0),
-          child: TextField(
-            enabled: false,
-            controller: _valueTotalController,
-            decoration: InputDecoration(
-              labelText: "VALOR TOTAL DA VENDA",
-              prefixIcon: Icon(Icons.attach_money),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))
-              ),
-            ),
-          ),
-        ),
-        new Container(
-          padding: EdgeInsets.all(10.0),
-          child: TextField(
-            controller: _valueDiscountController,
-            decoration: InputDecoration(
-              labelText: "VALOR DO DESCONTO",
-              prefixIcon: Icon(Icons.money_off),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))
-              ),
-            ),
-            onChanged: (text) {
-              valueDiscount = double.parse(text);
-              _valueFinalSale();
-            },
-          ),
-        ),
-        new Container(
-          padding: EdgeInsets.all(10.0),
-          child: TextField(
-            controller: _valueFinalController,
-            decoration: InputDecoration(
-              labelText: "VALOR FINAL",
-              prefixIcon: Icon(Icons.monetization_on),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))
-              ),
-            ),
-          ),
-        ),
-        new Expanded(
-          child: _productSoldList()
-        ),
-      ],
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Não")
+              )
+            ],
+          );
+        }
     );
   }
 }
 
-
-//NOME DO CLIENTE
-//DATA VENDA
-//CODE VENDEDOR
-//VL TOTAL DOS PRODUTOS
-//VL DESCONTO
-//VALOR FINAL
-//CANCELAR

@@ -220,9 +220,9 @@ class _ListProductState extends State<ListProduct> {
               print(priceFinal);
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ClientRegister(
-                      priceFinal: priceFinal,
-                      sellerCode: widget.seller.code,
-                      products: products,
+                    priceFinal: priceFinal,
+                    sellerCode: widget.seller.code,
+                    products: products,
                   )));
             }
         ),

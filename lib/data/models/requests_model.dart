@@ -1,34 +1,53 @@
 final String requestTable = "Request";
 final String requestIdColumn = "Id";
-final String requestIdSellerColumn = "Id Seller";
-final String requestDateColumn = "Date";
 final String requestNameClientColumn = "Name Client";
+final String requestDateColumn = "Date";
+final String requestIdSellerColumn = "Id Seller";
+final String requestValorInicialColumn = "Valor Inicial";
+final String requestValorDescontoColumn = "Valor Desconto";
+final String requestValorFinalColumn = "Valor Final";
+//final String requestListProduct = "Lista de Produtos";
 
 class RequestModel {
   int id;
-  int idSeller;
-  DateTime date;
   String nameClient;
+  String date;
+  int idSeller;
+  double valorInicial;
+  double valorDesconto;
+  double valorFinal;
+  //List listProduct;
 
   RequestModel ({
     this.id,
-    this.idSeller,
+    this.nameClient,
     this.date,
-    this.nameClient
+    this.idSeller,
+    this.valorInicial,
+    this.valorDesconto,
+    this.valorFinal,
   });
 
   RequestModel.fromMap(Map mapRequest){
     id = mapRequest[requestIdColumn];
-    idSeller = mapRequest[requestIdSellerColumn];
-    date = mapRequest[requestDateColumn];
     nameClient = mapRequest[requestNameClientColumn];
+    date = mapRequest[requestDateColumn];
+    idSeller = mapRequest[requestIdSellerColumn];
+    valorInicial = mapRequest[requestValorInicialColumn];
+    valorDesconto = mapRequest[requestValorDescontoColumn];
+    valorFinal = mapRequest[requestValorFinalColumn];
+    //listProduct = mapRequest[requestListProduct];
   }
 
   Map toMap (){
     Map<String, dynamic> mapRequest = {
-      requestIdSellerColumn: idSeller,
+      requestNameClientColumn: nameClient,
       requestDateColumn: date,
-      requestNameClientColumn: nameClient
+      requestIdSellerColumn: idSeller,
+      requestValorInicialColumn: valorInicial,
+      requestValorDescontoColumn: valorDesconto,
+      requestValorFinalColumn: valorFinal,
+      //requestListProduct:  listProduct,
     };
     if(id != null){
       mapRequest[requestIdColumn] = id;
@@ -38,6 +57,8 @@ class RequestModel {
 
   @override
   String toString() {
-    return "ID $id | ID SELLER: $idSeller | DATE: $date | NAME CLIENT: $nameClient ";
+    return "ID $id | NAME CLIENT: $nameClient | DATE: $date | ID SELLER: $idSeller | VALOR DA COMPRA: $valorInicial | "
+        "VALOR DO DESCONTO: $valorDesconto | VALOR TOTAL: $valorFinal | ";
+        //"PRODUTOS: $listProduct";
   }
 }
