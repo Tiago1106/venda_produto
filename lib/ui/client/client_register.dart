@@ -18,28 +18,30 @@ class ClientRegister extends StatefulWidget {
 
 class _ClientRegisterState extends State<ClientRegister> {
 
-  double valueDiscount;
-  double valueFinal;
-
-  RequestModel _saveSale;
-
-
-  @override
-  void initState() {
-    super.initState();
-    _getAllProductSold();
-  }
-
-  ProductHelper helperProduct = ProductHelper();
-  RequestHelper helperRequest = RequestHelper();
-
-  List<ProductModel> productsSold = List();
   final TextEditingController _nameClientController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _valueTotalController = TextEditingController();
   final TextEditingController _valueDiscountController = TextEditingController();
   final TextEditingController _valueFinalController = TextEditingController();
+
+  double valueDiscount;
+  double valueFinal;
+
+  RequestModel _saveSale;
+
+  ProductHelper helperProduct = ProductHelper();
+  RequestHelper helperRequest = RequestHelper();
+
+  List<ProductModel> productsSold = List();
+
+  @override
+  void initState() {
+    super.initState();
+    3_getAllProductSold();
+
+
+  }
 
   void _getAllProductSold() {
     widget.products.forEach((product) => {
@@ -70,9 +72,10 @@ class _ClientRegisterState extends State<ClientRegister> {
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.check_box),
           backgroundColor: Colors.red,
-          onPressed: (){
+          onPressed: () {
             _notificationSave();
             helperRequest.save(_saveSale);
+            print(_saveSale);
           }
       ),
       body: new SingleChildScrollView(
@@ -81,19 +84,19 @@ class _ClientRegisterState extends State<ClientRegister> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             new Container(
-              padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
               child: TextField(
-                controller: _nameClientController,
-                decoration: InputDecoration(
-                  labelText: "NOME DO CLIENTE",
-                  prefixIcon: Icon(Icons.account_circle),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  controller: _nameClientController,
+                  decoration: InputDecoration(
+                    labelText: "NOME DO CLIENTE",
+                    prefixIcon: Icon(Icons.account_circle),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))
+                    ),
                   ),
-                ),
-                onChanged: ( text ) {
-                  _saveSale.nameClient = text;
-                }
+                  onChanged: ( text ) {
+                    _saveSale.nameClient = text;
+                  }
               ),
             ),
             new Container(
@@ -200,6 +203,7 @@ class _ClientRegisterState extends State<ClientRegister> {
               ),
               FlatButton(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.pop(context);
                   },
                   child: Text("Não")

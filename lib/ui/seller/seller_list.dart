@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:venda_produto/data/models/seller_model.dart';
 import 'package:venda_produto/data/helpers/seller_helper.dart';
+import 'package:venda_produto/ui/client/client_list.dart';
 import '../product/product_list.dart';
 import 'seller_register.dart';
 import 'package:venda_produto/ui/product/product_import.dart';
@@ -47,7 +48,7 @@ class _SellerListState extends State<SellerList> {
           child: ListView(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.add),
+                leading: Icon(Icons.person_add),
                 trailing: Icon(Icons.arrow_right),
                 title: Text("Adicionar Vendedor"),
                 onTap: (){
@@ -61,6 +62,15 @@ class _SellerListState extends State<SellerList> {
                 onTap: (){
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProductImport()));
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                trailing: Icon(Icons.arrow_right),
+                title: Text("Vendas"),
+                onTap: (){
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ListClient()));
                 },
               ),
             ],
